@@ -37,7 +37,7 @@ func (ccp *CCP) Create(to, smsId string, data []string) (url, body string, heade
 	/*
 	to: the number to send;
 	data: the data to send;
-	smsId: the ID of of template.
+	smsId: the ID of sms template.
 	 */
 
 	// format timestamp
