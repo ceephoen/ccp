@@ -35,8 +35,8 @@ type CCP struct {
 
 func (ccp *CCP) Create(to, smsId string, data []string) (url, body string, headers map[string]string) {
 	/*
-	to: the number to be sent;
-	data: the data to be sent;
+	to: the number to send;
+	data: the data to send;
 	smsId: the ID of of template.
 	 */
 
