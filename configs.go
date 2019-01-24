@@ -12,7 +12,7 @@ package ccp
 
 const (
 	//timestamp format, this is a fixed value, the timestamp of the birth of Golang
-	timeFormat = "20060102150405"
+	TimeFormat = "20060102150405"
 
 	// CCP config
 	// ACCOUNT SID

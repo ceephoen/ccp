@@ -41,7 +41,7 @@ func (ccp *CCP) Create(to, smsId string, data []string) (url, body string, heade
 	 */
 
 	// format timestamp
-	batch := time.Now().Format(timeFormat)
+	batch := time.Now().Format(TimeFormat)
 
 	// sign
 	sign := ccp.AccSid + ccp.AccToken + batch
