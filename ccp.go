@@ -33,7 +33,7 @@ type CCP struct {
 	AccToken string
 }
 
-func (ccp *CCP) Create(to, smsId string, data []string) (url, body string, headers map[string]string) {
+func (ccp *CCP) Create(to string, data []string, smsId string) (url, body string, headers map[string]string) {
 	/*
 	to: the number to send;
 	data: the data to send;
@@ -84,7 +84,7 @@ func SendCode(to string, data []string, smsId string) (cons map[string]interface
 	var headers map[string]string
 	smsId = SmsId
 
-	url, body, headers = Ccp.Create(to, smsId, data)
+	url, body, headers = Ccp.Create(to, data, smsId)
 
 	// http-Client
 	client := &http.Client{}
