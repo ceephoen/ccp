@@ -6,7 +6,7 @@
 //contact: ceephoen@163.com
 //software: GoLand
 //license: ceephoen@163.com
-//desc: 
+//desc:
 */
 package ccp
 

@@ -6,21 +6,21 @@
 //contact: ceephoen@163.com
 //software: GoLand
 //license: ceephoen@163.com
-//desc: 
+//desc:
 */
 package ccp
 
 import (
-	"time"
 	"crypto/md5"
-	"encoding/hex"
-	"strings"
 	"encoding/base64"
-	"net/http"
-	"io/ioutil"
-	"unsafe"
-	"fmt"
+	"encoding/hex"
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
+	"time"
+	"unsafe"
 )
 
 type CCP struct {
@@ -35,10 +35,10 @@ type CCP struct {
 
 func (ccp *CCP) Create(to string, data []string, smsId string) (url, body string, headers map[string]string) {
 	/*
-	to: the number to send;
-	data: the data to send;
-	smsId: the ID of sms template.
-	 */
+		to: the number to send;
+		data: the data to send;
+		smsId: the ID of sms template.
+	*/
 
 	// format timestamp
 	batch := time.Now().Format(TimeFormat)
@@ -74,7 +74,7 @@ func (ccp *CCP) Create(to string, data []string, smsId string) (url, body string
 	return
 }
 
-func SendCode(to string, data []string, smsId string) (cons map[string]interface{}) {
+func SendCode(to string, data []string, smsId string) (r map[string]interface{}) {
 
 	// instance
 	var Ccp = CCP{ServerIp, ServerPort, SoftVersion, AppId, AccountSid, AccountToken}
@@ -82,7 +82,6 @@ func SendCode(to string, data []string, smsId string) (cons map[string]interface
 	// url, body , headers
 	var url, body string
 	var headers map[string]string
-	smsId = SmsId
 
 	url, body, headers = Ccp.Create(to, data, smsId)
 
@@ -92,37 +91,41 @@ func SendCode(to string, data []string, smsId string) (cons map[string]interface
 	// request
 	request, _ := http.NewRequest("POST", url, strings.NewReader(body))
 
-	// headers
-	request.Header.Set("Accept", headers["Accept"])
-	request.Header.Set("Content-Type", headers["Content-Type"])
-	request.Header.Set("Authorization", headers["Authorization"])
+	// add headers
+	//request.Header.Set("Accept", headers["Accept"])
+	//request.Header.Set("Content-Type", headers["Content-Type"])
+	//request.Header.Set("Authorization", headers["Authorization"])
+
+	for k, v := range headers {
+		request.Header.Set(k, v)
+	}
 
 	// post-request
 	resp, _ := client.Do(request)
 	defer resp.Body.Close()
+
+	// read response body
 	b, err := ioutil.ReadAll(resp.Body)
 
 	// parse response body
-	stringBody := (*string)(unsafe.Pointer(&b))
+	//StringBody
+	sb := (*string)(unsafe.Pointer(&b))
 	if err != nil {
 		// handle error
-		fmt.Println(err)
+		log.Fatal("json parse error ", err)
 	}
 
 	// result map
-	cons = make(map[string]interface{})
+	r = make(map[string]interface{}, 0)
 
 	// json deserialization
-	e := json.Unmarshal([]byte(*stringBody), &cons)
+	e := json.Unmarshal([]byte(*sb), &r)
 
 	// json deserialization error handler
-	if err != nil {
-		fmt.Println(e)
-	} else {
-		fmt.Println("statusCode--->", cons["statusCode"])         // statusCode---> 000000
-		fmt.Printf("statusCode-Type--->%T\n", cons["statusCode"]) // statusCode-Type--->string
+	if e != nil {
+		log.Fatal("json parse error ", e)
 	}
 
-	// return cons
+	// return r
 	return
 }
