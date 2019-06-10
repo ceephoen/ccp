@@ -8,13 +8,14 @@
 //license: ceephoen@163.com
 //desc:
 */
-package ccp
+package sdk
 
 import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -33,7 +34,7 @@ type CCP struct {
 	AccToken string
 }
 
-func (ccp *CCP) Create(to string, data []string, smsId string) (url, body string, headers map[string]string) {
+func (ccp *CCP) Create(to, data []string, templateId string) (url, body string, headers map[string]string) {
 	/*
 		to: the number to send;
 		data: the data to send;
@@ -68,13 +69,14 @@ func (ccp *CCP) Create(to string, data []string, smsId string) (url, body string
 	}
 	b = "[" + b + "]"
 
-	body = strings.Join([]string{"{to:", to, ",", "datas:", b, ",", "templateId:", smsId, ",", "appId:", ccp.AppId, "}"}, "")
+	s := `{"to": "%s", "datas": %s, "templateId": "%s", "appId": "%s"}`
+	body = fmt.Sprintf(s, to, b, templateId, ccp.AppId)
 	headers = map[string]string{"Accept": "application/json", "Content-Type": "application/json;charset=utf-8", "Authorization": auth}
 
 	return
 }
 
-func SendCode(to string, data []string, smsId string) (r map[string]interface{}) {
+func SendCode(to, data []string, templateId string) (r map[string]interface{}) {
 
 	// instance
 	var Ccp = CCP{ServerIp, ServerPort, SoftVersion, AppId, AccountSid, AccountToken}
@@ -83,7 +85,7 @@ func SendCode(to string, data []string, smsId string) (r map[string]interface{})
 	var url, body string
 	var headers map[string]string
 
-	url, body, headers = Ccp.Create(to, data, smsId)
+	url, body, headers = Ccp.Create(to, data, templateId)
 
 	// http-Client
 	client := &http.Client{}

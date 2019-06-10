@@ -8,7 +8,7 @@
 //license: ceephoen@163.com
 //desc:
 */
-package ccp
+package sdk
 
 const (
 	//timestamp format, this is a fixed value, the timestamp of the birth of Golang
@@ -28,5 +28,5 @@ const (
 	// REST API version
 	SoftVersion = "2013-12-26"
 	// sms template id
-	SmsId = "***"
+	TemplateId = "***"
 )
