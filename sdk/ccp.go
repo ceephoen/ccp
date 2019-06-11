@@ -34,7 +34,7 @@ type CCP struct {
 	AccToken string
 }
 
-func (ccp *CCP) Create(to, data []string, templateId string) (url, body string, headers map[string]string) {
+func (ccp *CCP) Init(to, data []string, templateId string) (url, body string, headers map[string]string) {
 	/*
 		to: the number to send;
 		data: the data to send;
@@ -70,7 +70,11 @@ func (ccp *CCP) Create(to, data []string, templateId string) (url, body string, 
 	b = "[" + b + "]"
 
 	s := `{"to": "%s", "datas": %s, "templateId": "%s", "appId": "%s"}`
-	body = fmt.Sprintf(s, to, b, templateId, ccp.AppId)
+
+	// []string{"mobile", "mobile"} ---> "mobile,mobile"
+	sl := strings.Join(to, ",")
+
+	body = fmt.Sprintf(s, sl, b, templateId, ccp.AppId)
 	headers = map[string]string{"Accept": "application/json", "Content-Type": "application/json;charset=utf-8", "Authorization": auth}
 
 	return
@@ -85,7 +89,7 @@ func SendCode(to, data []string, templateId string) (r map[string]interface{}) {
 	var url, body string
 	var headers map[string]string
 
-	url, body, headers = Ccp.Create(to, data, templateId)
+	url, body, headers = Ccp.Init(to, data, templateId)
 
 	// http-Client
 	client := &http.Client{}
@@ -129,5 +133,6 @@ func SendCode(to, data []string, templateId string) (r map[string]interface{}) {
 	}
 
 	// return r
+	log.Println("容联云返回值--->", r)
 	return
 }
