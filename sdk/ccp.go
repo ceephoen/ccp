@@ -133,6 +133,6 @@ func SendCode(to, data []string, templateId string) (r map[string]interface{}) {
 	}
 
 	// return r
-	log.Println("容联云返回值--->", r)
+	log.Println("response data: ", r)
 	return
 }
